@@ -6,22 +6,6 @@ require 'listen'
 require 'tapioca'
 require 'tapioca/internal'
 # パッチを当てたいのでロードしておく
-require "tapioca/dsl/helpers/active_record_column_type_helper"
-# require 'tapioca/runner'
-
-::Tapioca::Dsl::Helpers::ActiveRecordColumnTypeHelper.class_eval do
-  private
-
-  sig { returns([String, String]) }
-  def id_type
-    if @constant.respond_to?(:composite_primary_key?) && T.unsafe(@constant).composite_primary_key?
-      @constant.primary_key.map(&method(:column_type_for)).map { |tuple| "[#{tuple.join(", ")}]" }
-    else
-      # ↓pkない場合のパッチ
-      column_type_for(@constant.primary_key || @constant.attribute_names.first)
-    end
-  end
-end
 
 
 module Tapioca
@@ -50,10 +34,28 @@ module Tapioca
     def run_tapioca_dsl(files)
       child_pid = fork do
         start_at = Time.now
+
+        require "tapioca/dsl/helpers/active_record_column_type_helper"
+        # require 'tapioca/runner'
+
+        ::Tapioca::Dsl::Helpers::ActiveRecordColumnTypeHelper.class_eval do
+          private
+
+          sig { returns([String, String]) }
+          def id_type
+            if @constant.respond_to?(:composite_primary_key?) && T.unsafe(@constant).composite_primary_key?
+              @constant.primary_key.map(&method(:column_type_for)).map { |tuple| "[#{tuple.join(", ")}]" }
+            else
+              # ↓pkない場合のパッチ
+              column_type_for(@constant.primary_key || @constant.attribute_names.first)
+            end
+          end
+        end
+
         # ::Rails.application.reloader.reload!
         # loader.send(:load_dsl_compilers)
-        #loader = Tapioca::Loaders::Dsl.load_application(tapioca_path: 'sorbet/tapioca', eager_load: true, app_root: '.', halt_upon_load_error: true)
-        system("bundle exec rake tapioca dsl -w `nproc`")
+        Tapioca::Loaders::Dsl.load_application(tapioca_path: 'sorbet/tapioca', eager_load: true, app_root: '.', halt_upon_load_error: true)
+        #system("bundle exec rake tapioca dsl -w `nproc`")
         # ::Tapioca::Commands::DslGenerate.new(
         #   requested_constants: [],
         #   requested_paths: [],#files.map { Pathname.new(_1) },
