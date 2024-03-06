@@ -36,7 +36,7 @@ module Tapioca
           files = modified + added + removed
 
           puts "Detected changes on #{files.join(", ")}, running dsl compilers..."
-          Process.wait(run_tapioca_dsl(files, loader))
+          Process.wait(run_tapioca_dsl(files))
         end
       rescue => e
         pp e
@@ -47,7 +47,7 @@ module Tapioca
       end
     end
 
-    def run_tapioca_dsl(files, loader)
+    def run_tapioca_dsl(files)
       child_pid = fork do
         start_at = Time.now
         # ::Rails.application.reloader.reload!
