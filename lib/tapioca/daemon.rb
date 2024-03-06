@@ -61,7 +61,6 @@ module Tapioca
           outpath: Pathname.new(Tapioca::DEFAULT_DSL_DIR),
           rbi_formatter: Tapioca::DEFAULT_RBI_FORMATTER.then { _1.max_line_length = Tapioca::DEFAULT_RBI_MAX_LINE_LENGTH },
           number_of_workers: 72,
-          --rbi-max-line-length=
           only: [],
           exclude: [],
           file_header: true,
