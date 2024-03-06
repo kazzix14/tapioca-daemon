@@ -46,9 +46,6 @@ module Tapioca
         retry
       end
     end
-    rbi_formatter = DEFAULT_RBI_FORMATTER
-      rbi_formatter.max_line_length = options[:rbi_max_line_length]
-      rbi_formatter
 
     def run_tapioca_dsl(files, loader)
       child_pid = fork do
