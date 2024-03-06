@@ -56,16 +56,16 @@ module Tapioca
         # loader.send(:load_dsl_compilers)
         Tapioca::Loaders::Dsl.load_application(tapioca_path: 'sorbet/tapioca', eager_load: true, app_root: '.', halt_upon_load_error: true)
         #system("bundle exec rake tapioca dsl -w `nproc`")
-        # ::Tapioca::Commands::DslGenerate.new(
-        #   requested_constants: [],
-        #   requested_paths: [],#files.map { Pathname.new(_1) },
-        #   outpath: Pathname.new(Tapioca::DEFAULT_DSL_DIR),
-        #   number_of_workers: 72,
-        #   only: [],
-        #   exclude: [],
-        #   file_header: true,
-        #   tapioca_path:Tapioca::TAPIOCA_DIR
-        # ).run
+        ::Tapioca::Commands::DslGenerate.new(
+          requested_constants: [],
+          requested_paths: [],#files.map { Pathname.new(_1) },
+          outpath: Pathname.new(Tapioca::DEFAULT_DSL_DIR),
+          number_of_workers: 72,
+          only: [],
+          exclude: [],
+          file_header: true,
+          tapioca_path:Tapioca::TAPIOCA_DIR
+        ).run
         puts "took #{(Time.now - start_at)} seconds to run compile"
       end
 
