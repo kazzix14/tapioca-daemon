@@ -27,9 +27,9 @@ end
 module Tapioca
   class Daemon
     def initialize
-      loader = Tapioca::Loaders::Dsl.new(tapioca_path: 'sorbet/tapioca', eager_load: true, app_root: '.', halt_upon_load_error: true)
-      loader.send(:load_dsl_extensions)
-      loader.send(:load_application)
+      # loader = Tapioca::Loaders::Dsl.new(tapioca_path: 'sorbet/tapioca', eager_load: true, app_root: '.', halt_upon_load_error: true)
+      # loader.send(:load_dsl_extensions)
+      # loader.send(:load_application)
 
       begin
         @listener = Listen.to('app', 'spec', 'sorbet/tapioca/compilers', wait_for_delay: 3) do |modified, added, removed|
@@ -50,18 +50,19 @@ module Tapioca
     def run_tapioca_dsl(files, loader)
       child_pid = fork do
         start_at = Time.now
-        ::Rails.application.reloader.reload!
-        loader.send(:load_dsl_compilers)
-        ::Tapioca::Commands::DslGenerate.new(
-          requested_constants: [],
-          requested_paths: [],#files.map { Pathname.new(_1) },
-          outpath: Pathname.new(Tapioca::DEFAULT_DSL_DIR),
-          number_of_workers: 72,
-          only: [],
-          exclude: [],
-          file_header: true,
-          tapioca_path:Tapioca::TAPIOCA_DIR
-        ).run
+        # ::Rails.application.reloader.reload!
+        # loader.send(:load_dsl_compilers)
+        loader = Tapioca::Loaders::Dsl.load_application(tapioca_path: 'sorbet/tapioca', eager_load: true, app_root: '.', halt_upon_load_error: true)
+        # ::Tapioca::Commands::DslGenerate.new(
+        #   requested_constants: [],
+        #   requested_paths: [],#files.map { Pathname.new(_1) },
+        #   outpath: Pathname.new(Tapioca::DEFAULT_DSL_DIR),
+        #   number_of_workers: 72,
+        #   only: [],
+        #   exclude: [],
+        #   file_header: true,
+        #   tapioca_path:Tapioca::TAPIOCA_DIR
+        # ).run
         puts "took #{(Time.now - start_at)} seconds to run compile"
       end
 
