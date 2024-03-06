@@ -1,0 +1,6 @@
+#!/usr/bin/env ruby
+
+require 'tapioca/daemon'
+
+daemon = Tapioca::Daemon.new
+daemon.start
