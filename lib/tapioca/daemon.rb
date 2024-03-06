@@ -52,7 +52,8 @@ module Tapioca
         start_at = Time.now
         # ::Rails.application.reloader.reload!
         # loader.send(:load_dsl_compilers)
-        loader = Tapioca::Loaders::Dsl.load_application(tapioca_path: 'sorbet/tapioca', eager_load: true, app_root: '.', halt_upon_load_error: true)
+        #loader = Tapioca::Loaders::Dsl.load_application(tapioca_path: 'sorbet/tapioca', eager_load: true, app_root: '.', halt_upon_load_error: true)
+        system("bundle exec rake tapioca dsl -w `nproc`")
         # ::Tapioca::Commands::DslGenerate.new(
         #   requested_constants: [],
         #   requested_paths: [],#files.map { Pathname.new(_1) },
